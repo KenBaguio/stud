@@ -17,17 +17,12 @@ class NotificationController extends Controller
     {
         $user = $request->user();
 
-        // Optimized: Limit notifications and select only needed columns
-        $limit = $request->get('limit', 5); // Default 5, max 100 (can be overridden by frontend)
-        $limit = min((int) $limit, 100);
-
         $notifications = Notification::select('id', 'sender_id', 'receiver_id', 'type', 'title', 'body', 'data', 'is_read', 'created_at', 'updated_at')
             ->where('receiver_id', $user->id)
             ->with(['sender' => function($query) {
                 $query->select('id', 'first_name', 'last_name', 'organization_name', 'is_organization');
             }])
             ->orderBy('created_at', 'desc')
-            ->limit($limit)
             ->get();
 
         // Transform notifications to include customer information at top level
