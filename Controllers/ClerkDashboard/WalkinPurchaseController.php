@@ -108,13 +108,7 @@ class WalkinPurchaseController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            // Add query limit support (default 5, max 100)
-            $limit = $request->query('limit', 5);
-            $limit = min((int) $limit, 100);
-            
-            $purchases = WalkinPurchase::orderBy('created_at', 'desc')
-                ->limit($limit)
-                ->get();
+            $purchases = WalkinPurchase::orderBy('created_at', 'desc')->get();
 
             return response()->json([
                 'success' => true,
