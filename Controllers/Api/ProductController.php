@@ -70,10 +70,12 @@ class ProductController extends Controller
                 $query->orderBy('created_at', 'desc');
             }
 
-            // Limit results (default 5, max 100)
-            $limit = $request->query('limit', 5);
-            $limit = min((int) $limit, 100);
-            $query->limit($limit);
+            // Limit results only if explicitly requested
+            if ($request->has('limit')) {
+                $limit = (int) $request->query('limit');
+                $limit = min($limit, 100);
+                $query->limit($limit);
+            }
 
             // Optimized: Use select to reduce data transfer
             $products = $query->select([
