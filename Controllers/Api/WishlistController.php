@@ -20,11 +20,8 @@ class WishlistController extends Controller
                 return response()->json(['message' => 'Unauthorized'], 401);
             }
 
-            $limit = $request->query('limit', 5);
-            $limit = min((int) $limit, 100);
-
             // Load the related product data
-            $wishlist = Wishlist::with('product')->where('user_id', $user->id)->limit($limit)->get();
+            $wishlist = Wishlist::with('product')->where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
             
             // Ensure product images use HTTPS URLs
             $formattedWishlist = $wishlist->map(function($item) {
